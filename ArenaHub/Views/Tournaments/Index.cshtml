@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ArenaHub.DTOs.TournamentViewDTO>
+@{
+    ViewData["Title"] = "Tournaments";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Tournaments</h1>
+    <div class="btn-group">
+        <a asp-action="Index" asp-route-status="active" class="btn @(ViewBag.Status == "active" ? "btn-primary" : "btn-outline-primary")">
+            Active
+        </a>
+        <a asp-action="Index" asp-route-status="upcoming" class="btn @(ViewBag.Status == "upcoming" ? "btn-primary" : "btn-outline-primary")">
+            Upcoming
+        </a>
+        <a asp-action="Index" asp-route-status="completed" class="btn @(ViewBag.Status == "completed" ? "btn-primary" : "btn-outline-primary")">
+            Completed
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var tournament in Model)
+    {
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">@tournament.Name</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        @if (!string.IsNullOrEmpty(tournament.LogoUrl))
+                        {
+                            <img src="@tournament.LogoUrl" alt="@tournament.Name" class="img-fluid" style="max-height: 120px;">
+                        }
+                        else
+                        {
+                            <i class="bi bi-trophy" style="font-size: 5rem;"></i>
+                        }
+                    </div>
+                    <p>@tournament.Description</p>
+                    <div class="d-flex justify-content-between">
+                        <span class="badge bg-info">@tournament.MatchCount matches</span>
+                        <span class="text-muted">@tournament.StartDate.ToString("d") - @tournament.EndDate.ToString("d")</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a asp-action="Details" asp-route-id="@tournament.Id" class="btn btn-outline-primary w-100">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

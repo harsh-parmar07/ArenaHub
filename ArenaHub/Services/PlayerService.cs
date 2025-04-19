@@ -26,6 +26,7 @@ namespace ArenaHub.Services
         {
             var players = await _context.Players
                 .Include(p => p.Team)
+                .AsNoTracking()
                 .ToListAsync();
 
             return _mapper.Map<List<PlayerViewDTO>>(players);
@@ -33,8 +34,10 @@ namespace ArenaHub.Services
 
         public async Task<PlayerViewDTO> GetPlayerById(Guid id)
         {
+            // Get basic player info
             var player = await _context.Players
                 .Include(p => p.Team)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (player == null)
@@ -42,7 +45,28 @@ namespace ArenaHub.Services
                 return null;
             }
 
-            return _mapper.Map<PlayerViewDTO>(player);
+            var playerDto = _mapper.Map<PlayerViewDTO>(player);
+
+            // Get match history separately for better query efficiency
+            playerDto.MatchHistory = await _context.MatchResults
+                .Where(mr => mr.MVPPlayerId == id ||
+                             mr.Match.HomeTeam.Players.Any(p => p.Id == id) ||
+                             mr.Match.AwayTeam.Players.Any(p => p.Id == id))
+                .OrderByDescending(mr => mr.Match.MatchDate)
+                .Select(mr => new PlayerMatchHistoryDTO
+                {
+                    MatchId = mr.MatchId,
+                    MatchDate = mr.Match.MatchDate,
+                    HomeTeamName = mr.Match.HomeTeam.Name,
+                    AwayTeamName = mr.Match.AwayTeam.Name,
+                    HomeTeamScore = mr.HomeTeamScore,
+                    AwayTeamScore = mr.AwayTeamScore,
+                    WasMVP = mr.MVPPlayerId == id
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            return playerDto;
         }
 
         public async Task<PlayerViewDTO> AddPlayer(PlayerCreateDTO playerCreateDTO)

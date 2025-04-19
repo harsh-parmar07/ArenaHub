@@ -42,22 +42,22 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Teams" asp-action="Index">
-                                <i class="bi bi-people me-1"></i> Teams
+                                <i class="bi bi-people-fill me-1"></i> Teams
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Players" asp-action="Index">
-                                <i class="bi bi-person me-1"></i> Players
+                                <i class="bi bi-person-vcard-fill me-1"></i> Players
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Matches" asp-action="Index">
-                                <i class="bi bi-trophy me-1"></i> Matches
+                                <i class="bi bi-joystick me-1"></i> Matches
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Tournaments" asp-action="Index">
-                                <i class="bi bi-award me-1"></i> Tournaments
+                                <i class="bi bi-trophy-fill me-1"></i> Tournaments
                             </a>
                         </li>
                     </ul>
@@ -117,6 +117,7 @@
                 <div class="col-md-6 text-center text-md-end">
                     <a href="#" class="text-decoration-none me-2"><i class="bi bi-twitter"></i></a>
                     <a href="#" class="text-decoration-none me-2"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-decoration-none me-2"><i class="bi bi-instagram"></i></a>
                     <a href="#" class="text-decoration-none"><i class="bi bi-discord"></i></a>
                 </div>
             </div>
@@ -139,6 +140,32 @@
             setTimeout(function() {
                 $('.toast').toast('hide');
             }, 5000);
+
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', () => {
+                const htmlEl = document.documentElement;
+                const currentTheme = htmlEl.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                htmlEl.setAttribute('data-bs-theme', newTheme);
+
+                // Update icon
+                const icon = themeToggle.querySelector('i');
+                icon.className = newTheme === 'dark'
+                    ? 'bi bi-moon-fill'
+                    : 'bi bi-sun-fill';
+
+                // Save preference
+                localStorage.setItem('arenahub-theme', newTheme);
+            });
+
+            // Initialize theme from localStorage
+            const savedTheme = localStorage.getItem('arenahub-theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            const icon = themeToggle.querySelector('i');
+            icon.className = savedTheme === 'dark'
+                ? 'bi bi-moon-fill'
+                : 'bi bi-sun-fill';
         });
     </script>
 

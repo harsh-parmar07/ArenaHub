@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ArenaHub.DTOs.MatchViewDTO>
+@{
+    ViewData["Title"] = "Matches";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Matches</h1>
+    <div class="btn-group">
+        <a asp-action="Index" asp-route-filter="upcoming" class="btn @(ViewBag.Filter == "upcoming" ? "btn-primary" : "btn-outline-primary")">
+            Upcoming
+        </a>
+        <a asp-action="Index" asp-route-filter="live" class="btn @(ViewBag.Filter == "live" ? "btn-primary" : "btn-outline-primary")">
+            Live
+        </a>
+        <a asp-action="Index" asp-route-filter="past" class="btn @(ViewBag.Filter == "past" ? "btn-primary" : "btn-outline-primary")">
+            Past
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var match in Model)
+    {
+        <div class="col-md-6 col-lg-4 mb-4">
+            <partial name="Shared/Components/MatchCard" model="match" />
+        </div>
+    }
+</div>

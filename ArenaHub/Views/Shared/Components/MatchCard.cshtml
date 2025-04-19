@@ -1,0 +1,50 @@
+﻿@model ArenaHub.DTOs.MatchViewDTO
+
+<div class="card h-100 match-card">
+    <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between">
+            <span>@Model.TournamentName</span>
+            <span>@Model.MatchDate.ToString("g")</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-5 text-end">
+                <div class="fw-bold">@Model.HomeTeamName</div>
+                @if (!string.IsNullOrEmpty(Model.HomeTeamLogo))
+                {
+                    <img src="@Model.HomeTeamLogo" alt="@Model.HomeTeamName" style="height: 40px;" class="mt-2">
+                }
+                else
+                {
+                    <div class="team-placeholder mt-2">
+                        <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+                    </div>
+                }
+                <div class="score-display mt-2">@Model.HomeScoreDisplay</div>
+            </div>
+            <div class="col-2 text-center">
+                <div class="display-6">VS</div>
+            </div>
+            <div class="col-5 text-start">
+                <div class="fw-bold">@Model.AwayTeamName</div>
+                @if (!string.IsNullOrEmpty(Model.AwayTeamLogo))
+                {
+                    <img src="@Model.AwayTeamLogo" alt="@Model.AwayTeamName" style="height: 40px;" class="mt-2">
+                }
+                else
+                {
+                    <div class="team-placeholder mt-2">
+                        <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+                    </div>
+                }
+                <div class="score-display mt-2">@Model.AwayScoreDisplay</div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer text-center">
+        <a asp-controller="Matches" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
+            View Details
+        </a>
+    </div>
+</div>

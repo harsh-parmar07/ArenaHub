@@ -29,8 +29,9 @@ namespace ArenaHub.Services
                 .Include(m => m.AwayTeam)
                 .Include(m => m.Tournament)
                 .Include(m => m.MatchResult)
-                .ThenInclude(mr => mr.MVPPlayer)
+                    .ThenInclude(mr => mr.MVPPlayer)
                 .OrderBy(m => m.MatchDate)
+                .AsNoTracking()
                 .ToListAsync();
 
             return _mapper.Map<List<MatchViewDTO>>(matches);
@@ -43,7 +44,8 @@ namespace ArenaHub.Services
                 .Include(m => m.AwayTeam)
                 .Include(m => m.Tournament)
                 .Include(m => m.MatchResult)
-                .ThenInclude(mr => mr.MVPPlayer)
+                    .ThenInclude(mr => mr.MVPPlayer)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (match == null)
@@ -51,7 +53,16 @@ namespace ArenaHub.Services
                 return null;
             }
 
-            return _mapper.Map<MatchViewDTO>(match);
+            var matchDto = _mapper.Map<MatchViewDTO>(match);
+
+            // Ensure we have display properties
+            matchDto.HomeTeamName = match.HomeTeam?.Name ?? "Unknown Team";
+            matchDto.HomeTeamLogo = match.HomeTeam?.LogoUrl;
+            matchDto.AwayTeamName = match.AwayTeam?.Name ?? "Unknown Team";
+            matchDto.AwayTeamLogo = match.AwayTeam?.LogoUrl;
+            matchDto.TournamentName = match.Tournament?.Name;
+
+            return matchDto;
         }
 
         public async Task<MatchViewDTO> AddMatch(MatchCreateDTO matchCreateDTO)
@@ -100,8 +111,9 @@ namespace ArenaHub.Services
                 .Include(m => m.AwayTeam)
                 .Include(m => m.Tournament)
                 .Include(m => m.MatchResult)
-                .ThenInclude(mr => mr.MVPPlayer)
+                    .ThenInclude(mr => mr.MVPPlayer)
                 .OrderBy(m => m.MatchDate)
+                .AsNoTracking()
                 .ToListAsync();
 
             return _mapper.Map<List<MatchViewDTO>>(matches);

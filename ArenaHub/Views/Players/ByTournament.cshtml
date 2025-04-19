@@ -1,0 +1,20 @@
+﻿@model IEnumerable<ArenaHub.DTOs.MatchViewDTO>
+@{
+    ViewData["Title"] = $"Matches - {ViewBag.Tournament.Name}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>@ViewBag.Tournament.Name Matches</h1>
+    <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@ViewBag.Tournament.Id" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back to Tournament
+    </a>
+</div>
+
+<div class="row">
+    @foreach (var match in Model)
+    {
+        <div class="col-md-6 mb-4">
+            <partial name="Shared/Components/MatchCard" model="match" />
+        </div>
+    }
+</div>

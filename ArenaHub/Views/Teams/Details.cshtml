@@ -1,0 +1,120 @@
+﻿@model ArenaHub.DTOs.TeamViewDTO
+@{
+    ViewData["Title"] = "Team Details";
+}
+
+<div class="team-details">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@Model.Name</h1>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Back to Teams
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    @if (!string.IsNullOrEmpty(Model.LogoUrl))
+                    {
+                        <img src="@Model.LogoUrl" alt="@Model.Name logo" class="img-fluid team-logo mb-3" style="max-height: 200px;">
+                    }
+                    else
+                    {
+                        <div class="team-logo-placeholder mb-3">
+                            <i class="bi bi-people-fill" style="font-size: 8rem;"></i>
+                        </div>
+                    }
+                </div>
+                <div class="col-md-8">
+                    <h3>Team Information</h3>
+                    <dl class="row">
+                        <dt class="col-sm-3">Location:</dt>
+                        <dd class="col-sm-9">@Model.Location</dd>
+
+                        <dt class="col-sm-3">Players:</dt>
+                        <dd class="col-sm-9">@Model.PlayerCount</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">Team Players</h3>
+        </div>
+        <div class="card-body">
+            @if (Model.PlayerCount > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Nickname</th>
+                                <th>Age</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- This would be populated via JavaScript or ViewComponent -->
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No players currently on this team.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Load players via AJAX
+            $.get('/api/teams/@Model.Id/players', function(data) {
+                const tbody = $('table tbody');
+                tbody.empty();
+
+                if (data.length > 0) {
+                    data.forEach(player => {
+                        tbody.append(`
+                            <tr>
+                                <td>${player.name}</td>
+                                <td>${player.nickname || '-'}</td>
+                                <td>${player.age}</td>
+                                <td>
+                                    <a href="/players/details/${player.id}" class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    tbody.append(`
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                No players found
+                            </td>
+                        </tr>
+                    `);
+                }
+            });
+        });
+    </script>
+}
